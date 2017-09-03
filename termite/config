@@ -1,44 +1,43 @@
 [colors]
 
-# special
-foreground      = #746c48
-foreground_bold = #746c48
-cursor          = #746c48
-background      = #170f0d
+special
+foreground      = #93a1a1
+foreground_bold = #93a1a1
+cursor          = #93a1a1
+background      = #3c3b37
 
 # black
-color0  = #392925
-color8  = #544b2e
+color0  = #5f5f5f
+color8  = #828282
 
 # red
-color1  = #98724c
-color9  = #af652f
+color1  = #d96468
+color9  = #d98f93
 
 # green
-color2  = #908f32
-color10 = #c3c13d
+color2  = #a2d964
+color10 = #b8d98f
 
 # yellow
-color3  = #aa964c
-color11 = #c8b55b
+color3  = #d9c964
+color11 = #d9cf8f
 
 # blue
-color4  = #7b854e
-color12 = #70a16c
+color4  = #64a2d9
+color12 = #8f99d9
 
 # magenta
-color5  = #6b5644
-color13 = #98724c
+color5  = #9a64d9
+color13 = #b08fd9
 
 # cyan
-color6  = #5c5142
-color14 = #778725
+color6  = #64d9d5
+color14 = #8fd9d5
 
 # white
-color7  = #c8b55b
-color15 = #e4dc8c
-
+color7  = #989898
+color15 = #c5c5c5
 
 [options]
 
-font = Inconsolata 12
+font = Inconsolata 14
