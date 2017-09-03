@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # God
-# Modified 11-05-17
+# Modified 03-09-17
 
 hc() {
     herbstclient "$@"
@@ -10,8 +10,9 @@ hc emit_hook reload
 # Comfy screen
 herbstclient spawn redshift -t 3500K:2000K
 
-xsetroot -solid '#333333'
+xsetroot -solid '#3c3b37'
 xset r rate 200 30
+setxkbmap -option caps:swapescape
 
 # remove all existing keybindings
 hc keyunbind --all
@@ -29,13 +30,15 @@ hc keybind XF86AudioMute spawn pactl set-sink-mute 0 toggle
 hc keybind XF86MonBrightnessUp spawn xbacklight -inc 5 -time 10
 hc keybind XF86MonBrightnessDown spawn xbacklight -dec 5 -time 10
 
-hc keybind $Mod-d spawn dmenu_run -nb "#180f0d" -nf "#746c48"
+hc keybind XF86MonBrightnessDown spawn xbacklight -dec 5 -time 10
+hc keybind $Mod-d spawn dmenu_run -nb "#3c3b37" -nf "#93a1a1"
 hc keybind $Mod-c spawn firefox 
 hc keybind $Mod-b spawn termite -e "vim"
+hc keybind $Mod-y spawn lxterminal
 hc keybind $Mod-x spawn emacs 
 hc keybind $Mod-n spawn termite -e "ranger" 
 hc keybind $Mod-Return spawn termite 
-hc keybind $Mod-Control-s spawn i3lock -c 000000
+hc keybind $Mod-Control-s spawn ~/.config/herbstluftwm/lock.sh
 
 # basic movement
 # focusing clients
@@ -123,30 +126,36 @@ hc keybind $Mod-Space cycle
 hc keybind $Mod-i jumpto urgent
 
 # theme
+
+bgColor='#3c3b37'
+fgColor='#93a1a1'
+accentColor='#b08fd9'
+urgentColor='#d96468'
+
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
-hc set frame_border_active_color '#af652f'
-hc set frame_border_normal_color '#170f0d'
-hc set frame_bg_normal_color '#170f0d'
-hc set frame_bg_active_color '#170f0d'
+hc set frame_border_active_color $fgColor
+hc set frame_border_normal_color $bgColor
+hc set frame_bg_normal_color $bgColor
+hc set frame_bg_active_color $bgColor
 hc set frame_border_width 0
 hc set always_show_frame 0
 hc set frame_bg_transparent 1
 hc set frame_transparent_width 2
 hc set frame_gap 30
 
-hc attr theme.active.color '#af652f'
-hc attr theme.normal.color '#170f0d'
-hc attr theme.urgent.color orange
+hc attr theme.active.color $accentColor
+hc attr theme.normal.color $bgColor
+hc attr theme.urgent.color $urgentColor
 hc attr theme.inner_width 1
-hc attr theme.inner_color '#170f0d'
+hc attr theme.inner_color $bgColor
 hc attr theme.border_width 2
 hc attr theme.floating.border_width 1
 hc attr theme.floating.outer_width 1
-hc attr theme.floating.outer_color black
-hc attr theme.active.inner_color '#170f0d'
-hc attr theme.active.outer_color '#170f0d'
-hc attr theme.background_color '#170f0d'
+hc attr theme.floating.outer_color $bgColor
+hc attr theme.active.inner_color $accentColor
+hc attr theme.active.outer_color $accentColor
+hc attr theme.background_color $bgColor
 
 hc set window_gap 0
 hc set frame_padding 0
@@ -175,7 +184,7 @@ herbstclient spawn nitrogen --restore
 # do multi monitor setup here, e.g.:
 # hc set_monitors 1280x1024+0+0 1280x1024+1280+0
 # or simply:
-# hc detect_monitors
+hc detect_monitors
 
 # find the panel
 panel=~/.config/herbstluftwm/panel.sh

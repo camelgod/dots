@@ -17,9 +17,9 @@ panel_height=16
 font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
 
 
-bgcolor='#170f0d'
-selbg='#af652f'
-selfg='#FFF'
+bgcolor='#3c3b37'
+selbg='#b08fd9'
+selfg='#3c3b37'
 
 ####
 # Try to find textwidth binary.
