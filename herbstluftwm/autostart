@@ -8,10 +8,15 @@ hc() {
 
 hc emit_hook reload
 # Comfy screen
-herbstclient spawn redshift -t 3500K:2000K
 
+
+
+	
 xsetroot -solid '#3c3b37'
+
+# Set time for keydown to move faster in vim, etc.
 xset r rate 200 30
+# Swap Capslock and escape-key for easier mode swap vim
 setxkbmap -option caps:swapescape
 
 # remove all existing keybindings
@@ -37,7 +42,7 @@ hc keybind $Mod-b spawn termite -e "vim"
 hc keybind $Mod-y spawn lxterminal
 hc keybind $Mod-x spawn emacs 
 hc keybind $Mod-n spawn termite -e "ranger" 
-hc keybind $Mod-Return spawn termite 
+hc keybind $Mod-Return spawn termite
 hc keybind $Mod-Control-s spawn ~/.config/herbstluftwm/lock.sh
 
 # basic movement
@@ -180,6 +185,9 @@ hc unlock
 herbstclient set tree_style '╾│ ├└╼─┐'
 herbstclient spawn compton
 herbstclient spawn nitrogen --restore
+herbstclient spawn sh ~/.config/herbstluftwm/tray.sh
+herbstclient spawn nm-applet
+herbstclient spawn slack
 
 # do multi monitor setup here, e.g.:
 # hc set_monitors 1280x1024+0+0 1280x1024+1280+0
@@ -193,3 +201,12 @@ for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do
     # start it on each monitor
     "$panel" $monitor &
 done
+
+# Set bool to prevent successive restarting applications on reloads
+herbstclient silent new_attr bool my_not_first_autostart
+
+# Spawn applications for autostart
+if hc silent new_attr bool my_not_first_autostart ; then
+	redshift -t 3500k:2000k &
+fi
+
