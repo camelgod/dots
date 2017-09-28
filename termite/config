@@ -1,8 +1,8 @@
 [colors]
 
 special
-foreground      = #93a1a1
-foreground_bold = #93a1a1
+foreground      = #cbdbdb
+foreground_bold = #cbdbdb
 cursor          = #93a1a1
 background      = #3c3b37
 
@@ -12,7 +12,7 @@ color8  = #828282
 
 # red
 color1  = #d96468
-color9  = #d98f93
+color9  = #64a2d9
 
 # green
 color2  = #a2d964
