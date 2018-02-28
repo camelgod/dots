@@ -9,7 +9,7 @@ hc() {
 hc emit_hook reload
 
 # Set time for keydown to move faster in vim, etc.
-xset r rate 200 30
+xset r rate 200 40
 # Swap Capslock and escape-key for easier mode swap vim
 setxkbmap -option caps:swapescape
 
@@ -23,19 +23,19 @@ Mod=Mod4   # Use the super key as the main modifier
 hc keybind $Mod-Shift-q close
 hc keybind $Mod-Shift-r reload
 hc keybind $Mod-Shift-c quit
-hc keybind XF86AudioRaiseVolume spawn pactl set-sink-volume alsa_output.pci-0000_00_1f.3.analog-stereo +5%
-hc keybind XF86AudioLowerVolume spawn pactl set-sink-volume alsa_output.pci-0000_00_1f.3.analog-stereo -5%
+hc keybind XF86AudioRaiseVolume spawn pactl set-sink-volume 0 +5%
+hc keybind XF86AudioLowerVolume spawn pactl set-sink-volume 0 -5%
 hc keybind XF86AudioMute spawn pactl set-sink-mute 0 toggle
-hc keybind XF86MonBrightnessUp spawn xbacklight -inc 5 -time 10
-hc keybind XF86MonBrightnessDown spawn xbacklight -dec 5 -time 10
-
-hc keybind XF86MonBrightnessDown spawn xbacklight -dec 5 -time 10
-hc keybind $Mod-d spawn dmenu_run -nb "#3c3b37" -nf "#93a1a1"
+hc keybind XF86MonBrightnessUp spawn light -A -p 1
+hc keybind XF86MonBrightnessDown spawn light -U -p 1 
+hc keybind $Mod-d spawn dmenu_run -nb "#f5e7de" -nf "#34302d" -l 5
 hc keybind $Mod-c spawn firefox 
 hc keybind $Mod-b spawn termite -e "vim"
 hc keybind $Mod-y spawn lxterminal
 hc keybind $Mod-x spawn emacs 
 hc keybind $Mod-n spawn termite -e "ranger" 
+hc keybind $Mod-e spawn ~/.screenlayout/exte.sh 
+hc keybind $Mod-w spawn ~/.screenlayout/nexte.sh 
 hc keybind $Mod-Return spawn termite
 hc keybind $Mod-Control-s spawn ~/.config/herbstluftwm/lock.sh
 
@@ -126,31 +126,36 @@ hc keybind $Mod-i jumpto urgent
 
 # theme
 
-bgColor='#3c3b37'
-fgColor='#93a1a1'
-accentColor='#b08fd9'
-urgentColor='#d96468'
+# bgColor='#3c3b37'
+# fgColor='#93a1a1'
+# accentColor='#b08fd9'
+# urgentColor='#d96468'
+
+bgColor='#f5e7de'
+fgColor='#34302d'
+accentColor='#bf8f60'
+urgentColor='#992e2e'
 
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
-hc set frame_border_active_color $fgColor
+hc set frame_border_active_color $accentColor
 hc set frame_border_normal_color $bgColor
 hc set frame_bg_normal_color $bgColor
 hc set frame_bg_active_color $bgColor
-hc set frame_border_width 0
-hc set always_show_frame 0
+hc set frame_border_width 3
+hc set always_show_frame 1
 hc set frame_bg_transparent 1
-hc set frame_transparent_width 2
+hc set frame_transparent_width 0
 hc set frame_gap 30
 
 hc attr theme.active.color $accentColor
 hc attr theme.normal.color $bgColor
 hc attr theme.urgent.color $urgentColor
-hc attr theme.inner_width 1
+hc attr theme.inner_width 0
 hc attr theme.inner_color $bgColor
-hc attr theme.border_width 2
-hc attr theme.floating.border_width 1
-hc attr theme.floating.outer_width 1
+hc attr theme.border_width 0
+hc attr theme.floating.border_width 0
+hc attr theme.floating.outer_width 0
 hc attr theme.floating.outer_color $bgColor
 hc attr theme.active.inner_color $accentColor
 hc attr theme.active.outer_color $accentColor
@@ -161,6 +166,7 @@ hc set frame_padding 0
 hc set smart_window_surroundings 0
 hc set smart_frame_surroundings 0
 hc set mouse_recenter_gap 0
+
 
 # rules
 hc unrule -F
@@ -191,15 +197,15 @@ for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do
     "$panel" $monitor &
 done
 
+nitrogen --restore &
 
 # Spawn applications for autostart
 if hc silent new_attr bool my_not_first_autostart ; then
-	compton &
 	sh ~/.config/herbstluftwm/tray.sh &
-	slack &
-	nitrogen --restore &
+	slack -startintray &
 	nm-applet &
 	mopidy &
-	pnmixter &
+	redshift &
+	xscreensaver -nosplash &
 fi
 
