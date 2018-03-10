@@ -12,7 +12,11 @@ Packages unrelated to Herbstluftwm but still required in my setup:
 * nm-applet (for networkmanager tray icon)
 * termite (terminal)
 * zsh (shell)
+* ranger (file explorer)
 
 
+# Fresh formatted install commands
 `sudo apt updatea && sudo apt upgrade`
+
+
 `sudo apt install herbstluftwm i3lock dunst trayer dmenu zsh nm-applet nitrogen`
