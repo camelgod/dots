@@ -14,12 +14,21 @@ y=${geometry[1]}
 
 panel_width=${geometry[2]}
 panel_height=16
+
+
+###############################################################
+#### If you have a 4k screen or other resolution, increase the
+#### height size of the panel by increasing font size here
+###############################################################
 font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
 
 
 bgcolor='#3c3b37'
 selbg='#b08fd9'
 selfg='#3c3b37'
+bordercolor="#26221C"
+separator="^bg()^fg($selbg)~"
+battery=$(cat /sys/class/power_supply/BAT0/capacity)
 
 ####
 # Try to find textwidth binary.
@@ -65,7 +74,7 @@ hc pad $monitor $panel_height
     # e.g.
     #   date    ^fg(#efefef)18:33^fg(#909090), 2013-10-^fg(#efefef)29
 
-    #mpc idleloop player &
+    mpc idleloop player &
     while true ; do
         # "date" output is checked once a second, but an event is only
         # generated if the output changed compared to the previous run.
@@ -80,14 +89,13 @@ hc pad $monitor $panel_height
     visible=true
     date=""
     windowtitle=""
+    playerTitle=""
     while true ; do
 
         ### Output ###
         # This part prints dzen data based on the _previous_ data handling run,
         # and then waits for the next event to happen.
 
-        bordercolor="#26221C"
-        separator="^bg()^fg($selbg)~"
         # draw tags
         for i in "${tags[@]}" ; do
             case ${i:0:1} in
@@ -121,8 +129,7 @@ hc pad $monitor $panel_height
         echo -n "$separator"
         echo -n "^bg()^fg() ${windowtitle//^/^^}"
         # small adjustments
-        battery=$(cat /sys/class/power_supply/BAT0/capacity)
-        right="$separator^bg()bat: $battery $separator $date $separator"
+        right="$separator^bg()$playerTitle $separator bat: $battery $separator $date $separator"
         right_text_only=$(echo -n "$right" | sed 's.\^[^(]*([^)]*)..g')
         # get width of right aligned text.. and add some space..
         width=$($textwidth "$font" "$right_text_only    ")
@@ -175,8 +182,9 @@ hc pad $monitor $panel_height
             focus_changed|window_title_changed)
                 windowtitle="${cmd[@]:2}"
                 ;;
-            #player)
-            #    ;;
+            player)
+		    playerTitle="$(mpc current)"
+                ;;
         esac
     done
 

@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+####################################
+## CamelGod's Herbstluftwm script ##
+####################################
+# These are required for hlwm to start
+hc() {
+    herbstclient "$@"
+}
+hc emit_hook reload
+hc keyunbind --all
+
+
+###################################
+# CONFIGURATION                   #
+###################################
+# I recommend super key ("windows" key) because other applications don't use this as much as alt key
+# Change from "Mod4" to "Mod1" if you want to swap from super to alt.
+Mod=Mod4   # Use the super key as the main modifier
+
+# Set your prefered normal applications here; I also have a fallback terminal incase first is not installed (MOD+Y)
+term=termite
+fallbackterm=lxterminal
+browser=firefox
+
+# This is normal path if u cloned 'camelgod/dots'
+lockpath=~/.config/herbstluftwm/lock.sh
+# Leave this be if you didn't change default hlwm panel location.
+panel=~/.config/herbstluftwm/panel.sh
+
+# Set your prefered colors here to update in both hlwm and dmenu
+# (Note that panel.sh controls panel colors, so update those there)
+bgColor='#220d03'
+fgColor='#f6d66a'
+accentFg='#f6d66a'
+accentBg='#515c5d'
+accentColor='#515c5d'
+urgentColor='#992e2e'
+
+# Gaps between windows inside a frame
+windowGap=0
+# Gaps between two frames and the screen edges
+frameGap=20
+# Padding inside a frame
+framePadding=0
+
+
+# Remove whatever applications you dont have installed
+
+# Spawn applications for autostart
+# This bool controls that its apps only run once on first HLWM startup. They will not be rerun when reloading the configuration files.
+if hc silent new_attr bool my_not_first_autostart ; then
+	sh ~/.config/herbstluftwm/tray.sh &
+	slack &
+	nm-applet &
+	mopidy &
+	redshift &
+	xscreensaver -nosplash &
+fi
+# Restore wallpaper even if config is reloaded, in case of external monitors being plugged in on the run, etc.
+nitrogen --restore &
+
+####################################
+# RULES                            #
+####################################
+# Make slack start on specific workspace tag with vertically splitted areas
+hc rule title~'Slack' tag=9
+# Need to specify two rules, since slack creates two windows with different titles
+hc rule title~'Slack - Hackerspace' tag=9
+hc load 9 '(split horizontal:0.500000:0)'
+
+# Other default rules
+hc unrule -F
+hc rule focus=off # normally do not focus new clients
+# give focus to most common terminals
+#hc rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on
+hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
+
+####################################
+# Keyboard and input automation    #
+####################################
+# Set time for keydown to move faster on holding down keypress in vim, etc.
+xset r rate 200 40
+# Swap Capslock and escape-key for easier mode swap in vim
+# (If you want this in gnome, it must be configured in gnome tweak tool.
+setxkbmap -option caps:swapescape
+
+###################################
+#  Keybinds                       #
+###################################
+## Standard Keybinds ##
+hc keybind $Mod-Shift-q close
+hc keybind $Mod-Shift-r reload
+hc keybind $Mod-Shift-c quit
+hc keybind $Mod-c spawn $browser 
+hc keybind $Mod-b spawn $term -e "vim"
+hc keybind $Mod-y spawn $fallbackterm
+hc keybind $Mod-n spawn $term -e "ranger" 
+hc keybind $Mod-Return spawn $term
+hc keybind $Mod-Control-s spawn $lockpath
+##  My own very specific stuff ##
+hc keybind $Mod-d spawn dmenu_run -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg -l 5
+hc keybind $Mod-x spawn emacs 
+hc keybind $Mod-m spawn bash ~/.config/herbstluftwm/mpdmenu-spotify/mpdmenu :: -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg
+# Controls my screenlayouts for xrandr. Handy for quickly activating dual monitor setup.
+hc keybind $Mod-e spawn ~/.screenlayout/exte.sh 
+hc keybind $Mod-w spawn ~/.screenlayout/nexte.sh 
+# Specific keybinds for XPS 15 to control volume and brightness
+# May not work on other machines that do not have support for pactl or light.
+hc keybind XF86AudioRaiseVolume spawn pactl set-sink-volume 0 +5%
+hc keybind XF86AudioLowerVolume spawn pactl set-sink-volume 0 -5%
+hc keybind XF86AudioMute spawn pactl set-sink-mute 0 toggle
+hc keybind XF86MonBrightnessUp spawn light -A -p 1
+hc keybind XF86MonBrightnessDown spawn light -U -p 1 
+
+## Movement ##
+# focusing clients
+hc keybind $Mod-h     focus left
+hc keybind $Mod-j     focus down
+hc keybind $Mod-k     focus up
+hc keybind $Mod-l     focus right
+# moving clients
+hc keybind $Mod-Shift-h     shift left
+hc keybind $Mod-Shift-j     shift down
+hc keybind $Mod-Shift-k     shift up
+hc keybind $Mod-Shift-l     shift right
+# resizing frames
+resizestep=0.05
+hc keybind $Mod-Control-h       resize left +$resizestep
+hc keybind $Mod-Control-j       resize down +$resizestep
+hc keybind $Mod-Control-k       resize up +$resizestep
+hc keybind $Mod-Control-l       resize right +$resizestep
+# splitting frames
+# create an empty frame at the specified direction
+hc keybind $Mod-u       split   bottom  0.5
+hc keybind $Mod-o       split   right   0.5
+
+# tags
+tag_names=( {1..9} )
+tag_keys=( {1..9} 0 )
+
+hc rename default "${tag_names[0]}" || true
+for i in ${!tag_names[@]} ; do
+    hc add "${tag_names[$i]}"
+    key="${tag_keys[$i]}"
+    if ! [ -z "$key" ] ; then
+        hc keybind "$Mod-$key" use_index "$i"
+        hc keybind "$Mod-Shift-$key" move_index "$i"
+    fi
+done
+
+# cycle through tags
+hc keybind $Mod-period use_index +1 --skip-visible
+hc keybind $Mod-comma  use_index -1 --skip-visible
+
+# layouting
+hc keybind $Mod-r remove
+hc keybind $Mod-s floating toggle
+hc keybind $Mod-f fullscreen toggle
+hc keybind $Mod-p pseudotile toggle
+
+# The following cycles through the available layouts within a frame, but skips
+# layouts, if the layout change wouldn't affect the actual window positions.
+# I.e. if there are two windows within a frame, the grid layout is skipped.
+
+hc keybind $Mod-space                                                           \
+            or , and . compare tags.focus.curframe_wcount = 2                   \
+                     . cycle_layout +1 vertical horizontal max vertical grid    \
+               , cycle_layout +1
+
+# mouse
+hc mouseunbind --all
+hc mousebind $Mod-Button1 move
+hc mousebind $Mod-Button2 zoom
+hc mousebind $Mod-Button3 resize
+
+# focus
+hc keybind $Mod-BackSpace   cycle_monitor
+hc keybind $Mod-Tab         cycle_all +1
+hc keybind $Mod-Shift-Tab   cycle_all -1
+hc keybind $Mod-Space cycle
+hc keybind $Mod-i jumpto urgent
+
+
+###################################
+# Misc frames, borders and other
+# stuff you can configure
+###################################
+hc set frame_border_active_color $accentColor
+hc set frame_border_normal_color $bgColor
+hc set frame_bg_normal_color $bgColor
+hc set frame_bg_active_color $bgColor
+hc set frame_border_width 3
+hc set always_show_frame 1
+hc set frame_bg_transparent 1
+hc set frame_transparent_width 0
+hc set frame_gap $frameGap
+hc set window_gap $windowGap
+hc set frame_padding $framePadding
+hc set smart_window_surroundings 0
+hc set smart_frame_surroundings 0
+hc set mouse_recenter_gap 0
+hc attr theme.tiling.reset 1
+hc attr theme.floating.reset 1
+hc attr theme.active.color $accentColor
+hc attr theme.normal.color $bgColor
+hc attr theme.urgent.color $urgentColor
+hc attr theme.inner_width 0
+hc attr theme.inner_color $bgColor
+hc attr theme.border_width 0
+hc attr theme.floating.border_width 0
+hc attr theme.floating.outer_width 0
+hc attr theme.floating.outer_color $bgColor
+hc attr theme.active.inner_color $accentColor
+hc attr theme.active.outer_color $accentColor
+hc attr theme.background_color $bgColor
+
+# HLWM Default, dont change
+# unlock, just to be sure
+hc unlock
+herbstclient set tree_style '╾│ ├└╼─┐'
+# refer to the herbstluftwm documentation if you want hlwm to manage your monitor resolutions
+hc detect_monitors
+# Start panel on each monitor
+[ -x "$panel" ] || panel=/etc/xdg/herbstluftwm/panel.sh
+for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do
+    "$panel" $monitor &
+done
+
