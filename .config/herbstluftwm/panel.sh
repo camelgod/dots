@@ -181,9 +181,10 @@ hc pad $monitor $panel_height
                 ;;
             focus_changed|window_title_changed)
                 windowtitle="${cmd[@]:2}"
+		playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
                 ;;
             player)
-		    playerTitle="$(mpc current)"
+		    playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
                 ;;
         esac
     done
