@@ -91,7 +91,7 @@ hc pad $monitor $panel_height
     while true ; do
         # "date" output is checked once a second, but an event is only
         # generated if the output changed compared to the previous run.
-        date +$'date\t%M'
+        date +$'date\t^fg(#efefef)%H:%M:%S^fg(#909090)%m-^fg(#efefef)%d'
         sleep 1 || break
     done > >(uniq_linebuffered) &
     childpid=$!
@@ -143,7 +143,7 @@ hc pad $monitor $panel_height
         echo -n "$separator"
         echo -n "^bg()^fg() ${windowtitle//^/^^}"
         # small adjustments
-        right="sen: $sensor $separator ^bg()$playerTitle $separator bat: $battery $separator $date $separator"
+        right="sen: $sensor $separator ^bg()$playerTitle $separator bat: $battery $separator $date     $separator"
         right_text_only=$(echo -n "$right" | sed 's.\^[^(]*([^)]*)..g')
         # get width of right aligned text.. and add some space..
         width=$($textwidth "$font" "$right_text_only    ")
