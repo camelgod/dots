@@ -23,12 +23,13 @@ panel_height=16
 font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
 
 
-bgcolor='#3c3b37'
-selbg='#b08fd9'
-selfg='#3c3b37'
+bgcolor='#220D03'
+selbg='#c46c32'
+selfg='#f7d66a'
 bordercolor="#26221C"
 separator="^bg()^fg($selbg)~"
 battery=$(cat /sys/class/power_supply/BAT0/capacity)
+sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
 
 ####
 # Try to find textwidth binary.
@@ -78,7 +79,19 @@ hc pad $monitor $panel_height
     while true ; do
         # "date" output is checked once a second, but an event is only
         # generated if the output changed compared to the previous run.
-        date +$'date\t^fg(#efefef)%H:%M^fg(#909090), %Y-%m-^fg(#efefef)%d'
+        date +$'datehalf\t^fg(#efefef)%H:%M:%S^fg(#909090)%m-^fg(#efefef)%d'
+        sleep 30 || break
+    done > >(uniq_linebuffered) &
+    while true ; do
+        # "date" output is checked once a second, but an event is only
+        # generated if the output changed compared to the previous run.
+        date +$'datefive\t%M:%S'
+        sleep 5 || break
+    done > >(uniq_linebuffered) &
+    while true ; do
+        # "date" output is checked once a second, but an event is only
+        # generated if the output changed compared to the previous run.
+        date +$'date\t%M'
         sleep 1 || break
     done > >(uniq_linebuffered) &
     childpid=$!
@@ -90,6 +103,7 @@ hc pad $monitor $panel_height
     date=""
     windowtitle=""
     playerTitle=""
+    sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
     while true ; do
 
         ### Output ###
@@ -129,7 +143,7 @@ hc pad $monitor $panel_height
         echo -n "$separator"
         echo -n "^bg()^fg() ${windowtitle//^/^^}"
         # small adjustments
-        right="$separator^bg()$playerTitle $separator bat: $battery $separator $date $separator"
+        right="sen: $sensor $separator ^bg()$playerTitle $separator bat: $battery $separator $date $separator"
         right_text_only=$(echo -n "$right" | sed 's.\^[^(]*([^)]*)..g')
         # get width of right aligned text.. and add some space..
         width=$($textwidth "$font" "$right_text_only    ")
@@ -156,6 +170,12 @@ hc pad $monitor $panel_height
                 #echo "resetting date" >&2
                 date="${cmd[@]:1}"
                 ;;
+	    datehalf)
+		sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
+	        ;;
+	    datefive)
+		playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
+	        ;;
             quit_panel)
                 exit
                 ;;
@@ -181,7 +201,6 @@ hc pad $monitor $panel_height
                 ;;
             focus_changed|window_title_changed)
                 windowtitle="${cmd[@]:2}"
-		playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
                 ;;
             player)
 		    playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"

@@ -103,6 +103,7 @@ hc keybind $Mod-Control-s spawn $lockpath
 hc keybind $Mod-d spawn dmenu_run -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg -l 5
 hc keybind $Mod-x spawn emacs 
 hc keybind $Mod-m spawn bash ~/.config/herbstluftwm/mpdmenu-spotify/mpdmenu :: -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg
+hc keybind $Mod-Shift+m spawn $term -e "ncmpcpp" 
 # Controls my screenlayouts for xrandr. Handy for quickly activating dual monitor setup.
 hc keybind $Mod-e spawn ~/.screenlayout/exte.sh 
 hc keybind $Mod-w spawn ~/.screenlayout/nexte.sh 
