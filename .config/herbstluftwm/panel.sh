@@ -172,6 +172,7 @@ hc pad $monitor $panel_height
                 ;;
 	    datehalf)
 		sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
+		battery=$(cat /sys/class/power_supply/BAT0/capacity)
 	        ;;
 	    datefive)
 		playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"

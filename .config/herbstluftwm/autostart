@@ -44,21 +44,14 @@ frameGap=20
 framePadding=0
 
 
-# Remove whatever applications you dont have installed
-
-# Spawn applications for autostart
-# This bool controls that its apps only run once on first HLWM startup. They will not be rerun when reloading the configuration files.
-if hc silent new_attr bool my_not_first_autostart ; then
-	sh ~/.config/herbstluftwm/tray.sh &
-	slack &
-	nm-applet &
-	mopidy &
-	redshift &
-	xscreensaver -nosplash &
-fi
-# Restore wallpaper even if config is reloaded, in case of external monitors being plugged in on the run, etc.
-nitrogen --restore &
-
+# Other default rules
+hc unrule -F
+hc rule focus=off # normally do not focus new clients
+# give focus to most common terminals
+#hc rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on
+hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
 ####################################
 # RULES                            #
 ####################################
@@ -68,14 +61,6 @@ hc rule title~'Slack' tag=9
 hc rule title~'Slack - Hackerspace' tag=9
 hc load 9 '(split horizontal:0.500000:0)'
 
-# Other default rules
-hc unrule -F
-hc rule focus=off # normally do not focus new clients
-# give focus to most common terminals
-#hc rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
-hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on
-hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
-hc rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
 
 ####################################
 # Keyboard and input automation    #
@@ -217,6 +202,7 @@ hc attr theme.active.inner_color $accentColor
 hc attr theme.active.outer_color $accentColor
 hc attr theme.background_color $bgColor
 
+
 # HLWM Default, dont change
 # unlock, just to be sure
 hc unlock
@@ -229,3 +215,18 @@ for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do
     "$panel" $monitor &
 done
 
+
+# Remove whatever applications you dont have installed
+
+# Spawn applications for autostart
+# This bool controls that its apps only run once on first HLWM startup. They will not be rerun when reloading the configuration files.
+if hc silent new_attr bool my_not_first_autostart ; then
+	sh ~/.config/herbstluftwm/tray.sh &
+	slack &
+	nm-applet &
+	mopidy &
+	redshift &
+	xscreensaver -nosplash &
+fi
+# Restore wallpaper even if config is reloaded, in case of external monitors being plugged in on the run, etc.
+nitrogen --restore &
