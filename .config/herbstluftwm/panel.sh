@@ -23,9 +23,9 @@ panel_height=16
 font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
 
 
-bgcolor='#220D03'
-selbg='#c46c32'
-selfg='#f7d66a'
+bgcolor='#0c0c0c'
+selbg='#58d1eb'
+selfg='#f4005f'
 bordercolor="#26221C"
 separator="^bg()^fg($selbg)~"
 battery=$(cat /sys/class/power_supply/BAT0/capacity)
@@ -91,7 +91,7 @@ hc pad $monitor $panel_height
     while true ; do
         # "date" output is checked once a second, but an event is only
         # generated if the output changed compared to the previous run.
-        date +$'date\t^fg(#efefef)%H:%M:%S^fg(#909090)%m-^fg(#efefef)%d'
+        date +$'date\t%H:%M:%S~%m-%d'
         sleep 1 || break
     done > >(uniq_linebuffered) &
     childpid=$!
@@ -143,7 +143,7 @@ hc pad $monitor $panel_height
         echo -n "$separator"
         echo -n "^bg()^fg() ${windowtitle//^/^^}"
         # small adjustments
-        right="sen: $sensor $separator ^bg()$playerTitle $separator bat: $battery $separator $date     $separator"
+	right="^fg($selfg)sen:^fg($selbg)$sensor^fg($selfg) / ^fg($selfg)$playerTitle / ^fg($selfg)bat:^fg($selbg)$battery / ^fg($selfg)$date"
         right_text_only=$(echo -n "$right" | sed 's.\^[^(]*([^)]*)..g')
         # get width of right aligned text.. and add some space..
         width=$($textwidth "$font" "$right_text_only    ")
@@ -175,7 +175,7 @@ hc pad $monitor $panel_height
 		battery=$(cat /sys/class/power_supply/BAT0/capacity)
 	        ;;
 	    datefive)
-		playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
+		playerTitle="$(mpc current -f %title%)$(echo "~")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
 	        ;;
             quit_panel)
                 exit

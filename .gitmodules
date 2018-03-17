@@ -1,3 +1,0 @@
-[submodule ".config/herbstluftwm/mpdmenu-spotify"]
-	path = .config/herbstluftwm/mpdmenu-spotify
-	url = https://github.com/camelgod/mpdmenu-spotify

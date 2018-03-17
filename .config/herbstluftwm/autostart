@@ -29,12 +29,10 @@ panel=~/.config/herbstluftwm/panel.sh
 
 # Set your prefered colors here to update in both hlwm and dmenu
 # (Note that panel.sh controls panel colors, so update those there)
-bgColor='#220d03'
-fgColor='#f6d66a'
-accentFg='#f6d66a'
-accentBg='#515c5d'
-accentColor='#515c5d'
-urgentColor='#992e2e'
+bgColor='#0c0c0c'
+fgColor='#58d1eb'
+accentFg='#58d1eb'
+accentBg='#f4005f'
 
 # Gaps between windows inside a frame
 windowGap=0
@@ -173,11 +171,11 @@ hc keybind $Mod-i jumpto urgent
 # Misc frames, borders and other
 # stuff you can configure
 ###################################
-hc set frame_border_active_color $accentColor
-hc set frame_border_normal_color $bgColor
-hc set frame_bg_normal_color $bgColor
-hc set frame_bg_active_color $bgColor
-hc set frame_border_width 3
+hc set frame_border_active_color $accentBg
+hc set frame_border_normal_color $accentFg
+hc set frame_bg_normal_color $accentBg
+hc set frame_bg_active_color $accentBg
+hc set frame_border_width 2
 hc set always_show_frame 1
 hc set frame_bg_transparent 1
 hc set frame_transparent_width 0
@@ -186,20 +184,20 @@ hc set window_gap $windowGap
 hc set frame_padding $framePadding
 hc set smart_window_surroundings 0
 hc set smart_frame_surroundings 0
-hc set mouse_recenter_gap 0
+hc set mouse_recenter_gap 1
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
-hc attr theme.active.color $accentColor
+hc attr theme.active.color $bgColor
 hc attr theme.normal.color $bgColor
 hc attr theme.urgent.color $urgentColor
-hc attr theme.inner_width 0
-hc attr theme.inner_color $bgColor
-hc attr theme.border_width 0
+hc attr theme.inner_width 1
+hc attr theme.inner_color $fgColor
+hc attr theme.border_width 2
 hc attr theme.floating.border_width 0
 hc attr theme.floating.outer_width 0
 hc attr theme.floating.outer_color $bgColor
-hc attr theme.active.inner_color $accentColor
-hc attr theme.active.outer_color $accentColor
+hc attr theme.active.inner_color $accentBg
+hc attr theme.active.outer_color $accentBg
 hc attr theme.background_color $bgColor
 
 
