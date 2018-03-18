@@ -20,7 +20,7 @@ panel_height=16
 #### If you have a 4k screen or other resolution, increase the
 #### height size of the panel by increasing font size here
 ###############################################################
-font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
+font="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
 
 
 bgcolor='#0c0c0c'

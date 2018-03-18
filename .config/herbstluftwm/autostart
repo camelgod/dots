@@ -83,7 +83,8 @@ hc keybind $Mod-n spawn $term -e "ranger"
 hc keybind $Mod-Return spawn $term
 hc keybind $Mod-Control-s spawn $lockpath
 ##  My own very specific stuff ##
-hc keybind $Mod-d spawn dmenu_run -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg -l 5
+hc keybind $Mod-d spawn dmenu_run -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg -l 5 -fn "Terminus"
+
 hc keybind $Mod-x spawn emacs 
 hc keybind $Mod-m spawn bash ~/.config/herbstluftwm/mpdmenu-spotify/mpdmenu :: -nb $bgColor -nf $fgColor -sb $accentBg -sf $accentFg
 hc keybind $Mod-Shift+m spawn $term -e "ncmpcpp" 
