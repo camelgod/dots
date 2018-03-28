@@ -24,3 +24,4 @@ source $ZSH/oh-my-zsh.sh
 # Alias
 alias vac=". venv/bin/activate"
 alias herbstconf="vim ~/config/herbstluftwm/autostart"
+alias runpy="python3 manage.py runserver"
