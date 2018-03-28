@@ -39,6 +39,9 @@ let g:arduino_dir = '/usr/share/arduino/'
 let g:arduino_cmd = '/usr/bin/arduino'
 let g:arduino_run_headless = 1
 
+" Vim-easytags "
+let g:easytags_async = 1
+
 set noshowmode
 set ignorecase
 set smartcase
@@ -52,9 +55,20 @@ set hlsearch
 let mapleader=";"
 nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 nnoremap <silent> <leader>tb :TagbarToggle<CR>
+nnoremap <silent> <leader>tb :TagbarToggle<CR>
 nnoremap <silent> <leader>gs :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
 nnoremap <silent> <leader>gd :exec("tag ".expand("<cword>"))<CR> 
 nnoremap <silent> <leader>gb :pop<CR> 
+
+
+nnoremap tj  :tabfirst<CR>
+nnoremap tl  :tabnext<CR>
+nnoremap th  :tabprev<CR>
+nnoremap tk  :tablast<CR>
+nnoremap tt  :tabedit<Space>
+nnoremap tn  :tabnext<Space>
+nnoremap tm  :tabm<Space>
+nnoremap td  :tabclose<CR>
 
 
 " Start nerdtree on opening directory with vim"
