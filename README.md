@@ -29,23 +29,23 @@ Install packages:
 `sudo apt install herbstluftwm i3lock ffmpeg dunst trayer dmenu mpd mpc ncmpcpp zsh nm-applet nitrogen vim git`
 
 Make git directory:
-'cd && mkdir git && cd git'
+`cd && mkdir git && cd git`
 
 Clone this repo and move to home folder:
-'git clone https://github.com/camelgod/dots.git && cd dots && cp * ~'
+`git clone https://github.com/camelgod/dots.git && cd dots && cp * ~`
 
 
 Build termite:
-'git clone --recursive https://github.com/thestinger/termite.git
-cd termite && make'
+`git clone --recursive https://github.com/thestinger/termite.git
+cd termite && make`
 
 Create ranger config for rifle file opener:
 `ranger --copy-config=rifle`
 
 ZSH Config:
-git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+`git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh`
 
 
 
 OneLiner:
-'sudo apt update && sudo apt upgrade && sudo apt install herbstluftwm i3lock ffmpeg dunst trayer dmenu mpd mpc ncmpcpp zsh nm-applet nitrogen vim git && cd && mkdir git && cd git && git clone https://github.com/camelgod/dots.git && cd dots && cp * ~ && git clone --recursive https://github.com/thestinger/termite.git && cd termite && make && ranger --copy-config=rifle && git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh'
+`sudo apt update && sudo apt upgrade && sudo apt install herbstluftwm i3lock ffmpeg dunst trayer dmenu mpd mpc ncmpcpp zsh nm-applet nitrogen vim git && cd && mkdir git && cd git && git clone https://github.com/camelgod/dots.git && cd dots && cp * ~ && git clone --recursive https://github.com/thestinger/termite.git && cd termite && make && ranger --copy-config=rifle && git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh`
