@@ -1,35 +1,27 @@
 #!/usr/bin/env bash
 
+quote() {
+	local q="$(printf '%q ' "$@")"
+	printf '%s' "${q% }"
+}
+
+hc_quoted="$(quote "${herbstclient_command[@]:-herbstclient}")"
 hc() { "${herbstclient_command[@]:-herbstclient}" "$@" ;}
 monitor=${1:-0}
-geometry=( $(herbstclient monitor_rect "$monitor") )
+geometry=( $(hc monitor_rect "$monitor") )
 if [ -z "$geometry" ] ;then
     echo "Invalid monitor $monitor"
     exit 1
 fi
-
 # geometry has the format W H X Y
 x=${geometry[0]}
 y=${geometry[1]}
-
 panel_width=${geometry[2]}
-panel_height=16
-
-
-###############################################################
-#### If you have a 4k screen or other resolution, increase the
-#### height size of the panel by increasing font size here
-###############################################################
-font="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
-
-
-bgcolor='#0c0c0c'
-selbg='#58d1eb'
-selfg='#f4005f'
-bordercolor="#26221C"
-separator="^bg()^fg($selbg)~"
-battery=$(cat /sys/class/power_supply/BAT0/capacity)
-sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
+panel_height=48
+font="-*-fixed-medium-*-*-*-24-*-*-*-*-*-*-*"
+bgcolor=$(hc get frame_border_normal_color)
+selbg=$(hc get window_border_active_color)
+selfg='#101010'
 
 ####
 # Try to find textwidth binary.
@@ -38,6 +30,8 @@ if which textwidth &> /dev/null ; then
     textwidth="textwidth";
 elif which dzen2-textwidth &> /dev/null ; then
     textwidth="dzen2-textwidth";
+elif which xftwidth &> /dev/null ; then # For guix
+    textwidth="xtfwidth";
 else
     echo "This script requires the textwidth tool of the dzen2 project."
     exit 1
@@ -75,23 +69,11 @@ hc pad $monitor $panel_height
     # e.g.
     #   date    ^fg(#efefef)18:33^fg(#909090), 2013-10-^fg(#efefef)29
 
-    mpc idleloop player &
+    #mpc idleloop player &
     while true ; do
         # "date" output is checked once a second, but an event is only
         # generated if the output changed compared to the previous run.
-        date +$'datehalf\t^fg(#efefef)%H:%M:%S^fg(#909090)%m-^fg(#efefef)%d'
-        sleep 30 || break
-    done > >(uniq_linebuffered) &
-    while true ; do
-        # "date" output is checked once a second, but an event is only
-        # generated if the output changed compared to the previous run.
-        date +$'datefive\t%M:%S'
-        sleep 5 || break
-    done > >(uniq_linebuffered) &
-    while true ; do
-        # "date" output is checked once a second, but an event is only
-        # generated if the output changed compared to the previous run.
-        date +$'date\t%H:%M:%S~%m-%d'
+        date +$'date\t^fg(#efefef)%H:%M^fg(#909090), %Y-%m-^fg(#efefef)%d'
         sleep 1 || break
     done > >(uniq_linebuffered) &
     childpid=$!
@@ -102,14 +84,13 @@ hc pad $monitor $panel_height
     visible=true
     date=""
     windowtitle=""
-    playerTitle=""
-    sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
     while true ; do
 
         ### Output ###
         # This part prints dzen data based on the _previous_ data handling run,
         # and then waits for the next event to happen.
 
+        separator="^bg()^fg($selbg)|"
         # draw tags
         for i in "${tags[@]}" ; do
             case ${i:0:1} in
@@ -131,10 +112,8 @@ hc pad $monitor $panel_height
             esac
             if [ ! -z "$dzen2_svn" ] ; then
                 # clickable tags if using SVN dzen
-                echo -n "^ca(1,\"${herbstclient_command[@]:-herbstclient}\" "
-                echo -n "focus_monitor \"$monitor\" && "
-                echo -n "\"${herbstclient_command[@]:-herbstclient}\" "
-                echo -n "use \"${i:1}\") ${i:1} ^ca()"
+                echo -n "^ca(1,$hc_quoted focus_monitor \"$monitor\" && "
+                echo -n "$hc_quoted use \"${i:1}\") ${i:1} ^ca()"
             else
                 # non-clickable tags if using older dzen
                 echo -n " ${i:1} "
@@ -143,7 +122,7 @@ hc pad $monitor $panel_height
         echo -n "$separator"
         echo -n "^bg()^fg() ${windowtitle//^/^^}"
         # small adjustments
-	right="^fg($selfg)sen:^fg($selbg)$sensor^fg($selfg) / ^fg($selfg)$playerTitle / ^fg($selfg)bat:^fg($selbg)$battery / ^fg($selfg)$date"
+        right="$separator^bg() $date $separator"
         right_text_only=$(echo -n "$right" | sed 's.\^[^(]*([^)]*)..g')
         # get width of right aligned text.. and add some space..
         width=$($textwidth "$font" "$right_text_only    ")
@@ -170,13 +149,6 @@ hc pad $monitor $panel_height
                 #echo "resetting date" >&2
                 date="${cmd[@]:1}"
                 ;;
-	    datehalf)
-		sensor=$(sensors | grep CPU | grep -oP '(?=\+)(.*)(?=...C)')
-		battery=$(cat /sys/class/power_supply/BAT0/capacity)
-	        ;;
-	    datefive)
-		playerTitle="$(mpc current -f %title%)$(echo "~")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
-	        ;;
             quit_panel)
                 exit
                 ;;
@@ -203,9 +175,8 @@ hc pad $monitor $panel_height
             focus_changed|window_title_changed)
                 windowtitle="${cmd[@]:2}"
                 ;;
-            player)
-		    playerTitle="$(mpc current -f %title%)$(echo "~ ")$(mpc status | grep -oP '(?<=#......)(.*)(?=.....)')"
-                ;;
+            #player)
+            #    ;;
         esac
     done
 
@@ -214,5 +185,5 @@ hc pad $monitor $panel_height
     # gets piped to dzen2.
 
 } 2> /dev/null | dzen2 -w $panel_width -x $x -y $y -fn "$font" -h $panel_height \
-    -e 'button3=;button4=exec:herbstclient use_index -1;button5=exec:herbstclient use_index +1' \
+    -e "button3=;button4=exec:$hc_quoted use_index -1;button5=exec:$hc_quoted use_index +1" \
     -ta l -bg "$bgcolor" -fg '#efefef'

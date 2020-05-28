@@ -15,10 +15,10 @@ hc keyunbind --all
 ###################################
 # I recommend super key ("windows" key) because other applications don't use this as much as alt key
 # Change from "Mod4" to "Mod1" if you want to swap from super to alt.
-Mod=Mod4   # Use the super key as the main modifier
+Mod=Mod1   # Use the super key as the main modifier
 
 # Set your prefered normal applications here; I also have a fallback terminal incase first is not installed (MOD+Y)
-term=termite
+term=gnome-terminal
 fallbackterm=lxterminal
 browser=firefox
 
@@ -29,15 +29,15 @@ panel=~/.config/herbstluftwm/panel.sh
 
 # Set your prefered colors here to update in both hlwm and dmenu
 # (Note that panel.sh controls panel colors, so update those there)
-bgColor='#0c0c0c'
-fgColor='#58d1eb'
-accentFg='#58d1eb'
-accentBg='#f4005f'
+bgColor='#fff'
+fgColor='#000'
+accentFg='#000'
+accentBg='#fff'
 
 # Gaps between windows inside a frame
 windowGap=0
 # Gaps between two frames and the screen edges
-frameGap=20
+frameGap=10
 # Padding inside a frame
 framePadding=0
 
@@ -96,8 +96,8 @@ hc keybind $Mod-w spawn ~/.screenlayout/nexte.sh
 hc keybind XF86AudioRaiseVolume spawn pactl set-sink-volume 0 +5%
 hc keybind XF86AudioLowerVolume spawn pactl set-sink-volume 0 -5%
 hc keybind XF86AudioMute spawn pactl set-sink-mute 0 toggle
-hc keybind XF86MonBrightnessUp spawn light -A -p 1
-hc keybind XF86MonBrightnessDown spawn light -U -p 1 
+hc keybind XF86MonBrightnessUp spawn xrandr --output eDP-1-1 --brightness 0.2
+hc keybind XF86MonBrightnessDown spawn xrandr --output eDP-1-1 --brightness 0.6
 
 ## Movement ##
 # focusing clients
@@ -176,15 +176,15 @@ hc set frame_border_active_color $accentBg
 hc set frame_border_normal_color $accentFg
 hc set frame_bg_normal_color $accentBg
 hc set frame_bg_active_color $accentBg
-hc set frame_border_width 2
+hc set frame_border_width 4
 hc set always_show_frame 1
 hc set frame_bg_transparent 1
 hc set frame_transparent_width 0
 hc set frame_gap $frameGap
 hc set window_gap $windowGap
 hc set frame_padding $framePadding
-hc set smart_window_surroundings 0
-hc set smart_frame_surroundings 0
+hc set smart_window_surroundings 1
+hc set smart_frame_surroundings 1
 hc set mouse_recenter_gap 1
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
@@ -221,11 +221,7 @@ done
 # This bool controls that its apps only run once on first HLWM startup. They will not be rerun when reloading the configuration files.
 if hc silent new_attr bool my_not_first_autostart ; then
 	sh ~/.config/herbstluftwm/tray.sh &
-	slack &
-	nm-applet &
-	mopidy &
-	redshift &
-	xscreensaver -nosplash &
+	compton &
 fi
 # Restore wallpaper even if config is reloaded, in case of external monitors being plugged in on the run, etc.
 nitrogen --restore &
